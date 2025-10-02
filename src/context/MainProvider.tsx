@@ -1,40 +1,24 @@
-import { createContext, useEffect, useState } from "react";
-import type { IProduct } from "../interfaces/IProduct";
-import { getProduct_store } from "../functions/getProducts";
-import {
-  getCart,
-  getCategory,
-  getProductANDCategory,
-} from "../functions/getProducts_v2";
+import { createContext, useEffect, useState } from "react"
+import type { IRecipe } from "../interfaces/IRecipe"
+import { getRecipesWithCategory } from "../functions/getRecipe"
 
-export interface mainContextProps {
-  products: IProduct[];
+export interface MainContextProps {
+  recipes: IRecipe[]
 }
 
-export const mainContext = createContext<mainContextProps | null>(null);
+export const mainContext = createContext<MainContextProps | null>(null)
 
-export default function MainProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [products, setProducts] = useState<IProduct[]>([]);
+export default function MainProvider({ children }: { children: React.ReactNode }) {
+  const [recipes, setRecipes] = useState<IRecipe[]>([])
 
   useEffect(() => {
-    const getData_In_useEffect = async () => {
-      const products_Variable_von_der_function = await getProduct_store();
-      await getProductANDCategory();
-      await getCart();
-      await getCategory();
-      // const products_category_von_der_function = await getProductANDCategory();
-      // console.log(products_category_von_der_function);
-      console.log(products_Variable_von_der_function);
-      setProducts(products_Variable_von_der_function);
-    };
-    getData_In_useEffect();
-  }, []);
+    const getDataInUseEffect = async () => {
+      const recipesFromFunction = await getRecipesWithCategory()
+      console.log(recipesFromFunction)
+      setRecipes(recipesFromFunction)
+    }
+    getDataInUseEffect()
+  }, [])
 
-  return (
-    <mainContext.Provider value={{ products }}>{children}</mainContext.Provider>
-  );
+  return <mainContext.Provider value={{ recipes }}>{children}</mainContext.Provider>
 }
