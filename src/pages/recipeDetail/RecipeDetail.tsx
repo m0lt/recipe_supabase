@@ -74,20 +74,6 @@ export default function RecipeDetail() {
     setFavoriteLoading(false)
   }
 
-  //? Hilfsfunktion um Zutaten-String in ein Array zu konvertieren
-  //? Erwartet einen String mit Zeilen-Trennung oder JSON-Array
-  const parseIngredients = (ingredients: string | undefined): string[] => {
-    if (!ingredients) return []
-
-    try {
-      //? Versuche als JSON zu parsen (falls ingredients als JSON-Array gespeichert ist)
-      return JSON.parse(ingredients)
-    } catch {
-      //? Falls kein JSON, teile am Zeilenumbruch
-      return ingredients.split('\n').filter(line => line.trim() !== '')
-    }
-  }
-
   //? Hilfsfunktion um Zubereitungsschritte in ein Array zu konvertieren
   //? Erwartet einen String mit Zeilen-Trennung oder JSON-Array
   const parseInstructions = (instructions: string | undefined): string[] => {
@@ -123,9 +109,10 @@ export default function RecipeDetail() {
     )
   }
 
-  //? Parse die Zutaten und Zubereitungsschritte
-  const ingredients = parseIngredients(recipe.ingredients)
+  //? Parse die Zubereitungsschritte
   const instructions = parseInstructions(recipe.instructions)
+  //? Zutaten kommen direkt aus der DB als strukturiertes Array
+  const ingredients = recipe.ingredients || []
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -187,10 +174,20 @@ export default function RecipeDetail() {
           </div>
           {ingredients.length > 0 ? (
             <ul className="space-y-2">
-              {ingredients.map((ingredient, index) => (
-                <li key={index} className="flex items-start">
+              {ingredients.map((ingredient) => (
+                <li key={ingredient.id} className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
-                  <span className="text-gray-700 dark:text-gray-300">{ingredient}</span>
+                  <span className="text-gray-700 dark:text-gray-300">
+                    {ingredient.quantity && ingredient.unit
+                      ? `${ingredient.quantity} ${ingredient.unit} `
+                      : ingredient.quantity
+                        ? `${ingredient.quantity} `
+                        : ""}
+                    <strong>{ingredient.name}</strong>
+                    {ingredient.additional_info && (
+                      <span className="text-gray-500 dark:text-gray-400 ml-1">({ingredient.additional_info})</span>
+                    )}
+                  </span>
                 </li>
               ))}
             </ul>
