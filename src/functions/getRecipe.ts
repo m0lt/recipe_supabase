@@ -1,6 +1,7 @@
 import type { IRecipe } from "../interfaces/IRecipe"
 import supabase from "../utils/supabase"
 
+//? Diese Funktion holt ALLE Rezepte mit ihren Kategorien aus der Datenbank
 export async function getRecipesWithCategory(): Promise<IRecipe[]> {
   const { data: recipes, error } = await supabase.from("recipes").select(
     `
@@ -9,6 +10,9 @@ export async function getRecipesWithCategory(): Promise<IRecipe[]> {
         description,
         servings,
         instructions,
+        ingredients,
+        image_url,
+        additional_info,
         created_at,
         category:categories(name)
       `
@@ -23,56 +27,35 @@ export async function getRecipesWithCategory(): Promise<IRecipe[]> {
   return recipes as unknown as IRecipe[]
 }
 
-// Cart_items mit Produkten + Kategorien
+//? Diese Funktion holt EIN EINZELNES Rezept anhand der ID
+//? recipeId: Die ID des Rezepts das geladen werden soll
+//? Return: Ein einzelnes IRecipe-Objekt oder null wenn nicht gefunden
+export async function getRecipeById(recipeId: string): Promise<IRecipe | null> {
+  //? Hole das Rezept mit allen Feldern inklusive Kategorie-Informationen
+  const { data: recipe, error } = await supabase
+    .from("recipes")
+    .select(
+      `
+        id,
+        name,
+        description,
+        servings,
+        instructions,
+        ingredients,
+        image_url,
+        additional_info,
+        category_id,
+        created_at,
+        category:categories(name)
+      `
+    )
+    .eq("id", recipeId)
+    .single()
 
-// = SQL CODE
+  if (error) {
+    console.error("Error fetching recipe by ID:", error)
+    return null
+  }
 
-// SELECT
-//     cart_items.id,
-//     cart_items.cart_id,
-//     cart_items.quantity,
-//     products.id,
-//     products.title,
-//     products.price,
-//     products.quality,
-//     categories.id,
-//     categories.categoryName
-// FROM cart_items
-// JOIN products ON cart_items.product_id = products.id
-// JOIN categories ON products.categoryID = categories.id;
-
-// export async function getCart(): Promise<ICart> {
-//   const { data: cart, error } = await supabase.from("cart_items").select(
-//     `
-//         id,
-//         cart_id,
-//         quantity,
-//         products:products(
-//         id,
-//         title,
-//         price,
-//         quality,
-//         category:categories(category_name)
-//         )
-//         `
-//   )
-//   if (error) {
-//     console.error(error)
-//   }
-//   console.log(cart)
-//   return cart as unknown as ICart
-// }
-
-// export async function getCategory(): Promise<ICategory> {
-//   const { data: category, error } = await supabase.from("categories").select(`
-//         category_name,
-//         id,
-//         products_table:products(*)
-//         `)
-
-//   if (error) {
-//     console.error(error)
-//   }
-//   console.log(category)
-//   return category as unknown as ICategory
-// }
+  return recipe as unknown as IRecipe
+}
