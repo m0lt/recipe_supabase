@@ -31,7 +31,7 @@ export async function getRecipesWithCategory(): Promise<IRecipe[]> {
 //? recipeId: Die ID des Rezepts das geladen werden soll
 //? Return: Ein einzelnes IRecipe-Objekt oder null wenn nicht gefunden
 export async function getRecipeById(recipeId: string): Promise<IRecipe | null> {
-  //? Hole das Rezept mit allen Feldern inklusive Kategorie-Informationen und Zutaten
+  //? Hole das Rezept mit allen Feldern inklusive Kategorie-Informationen, Zutaten und User-Info
   const { data: recipe, error } = await supabase
     .from("recipes")
     .select(
@@ -45,8 +45,10 @@ export async function getRecipeById(recipeId: string): Promise<IRecipe | null> {
         additional_info,
         category_id,
         created_at,
+        user_id,
         category:categories(name),
-        ingredients:ingredients(id, recipe_id, name, quantity, unit, additional_info, created_at)
+        ingredients:ingredients(id, recipe_id, name, quantity, unit, additional_info, created_at),
+        user:users(username, img_url)
       `
     )
     .eq("id", recipeId)

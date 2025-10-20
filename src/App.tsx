@@ -7,7 +7,10 @@ import Login from "./pages/login/Login"
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute"
 import Profile from "./pages/profile/Profile"
 import Favorites from "./pages/favorites/Favorites"
+import MyRecipes from "./pages/myRecipes/MyRecipes"
 import RecipeDetail from "./pages/recipeDetail/RecipeDetail"
+import CreateRecipe from "./pages/createRecipe/CreateRecipe"
+import EditRecipe from "./pages/editRecipe/EditRecipe"
 
 function App() {
   const router = createBrowserRouter(
@@ -33,10 +36,34 @@ function App() {
           }
         />
         <Route
+          path="my-recipes"
+          element={
+            <ProtectedRoute>
+              <MyRecipes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="profile"
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="create-recipe"
+          element={
+            <ProtectedRoute>
+              <CreateRecipe />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="edit-recipe/:id"
+          element={
+            <ProtectedRoute>
+              <EditRecipe />
             </ProtectedRoute>
           }
         />

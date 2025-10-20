@@ -4,6 +4,7 @@ import type { IRecipe } from "../../interfaces/IRecipe"
 import { getRecipeById } from "../../functions/getRecipe"
 import { mainContext, type MainContextProps } from "../../context/MainProvider"
 import { addToFavorites, removeFromFavorites, checkIfFavorite } from "../../functions/addToFavorites"
+import { deleteRecipe } from "../../functions/deleteRecipe"
 
 export default function RecipeDetail() {
   //? useParams() holt die Parameter aus der URL (z.B. /recipe/:id)
@@ -23,6 +24,9 @@ export default function RecipeDetail() {
 
   //? Beim ersten Laden der Komponente wird das Rezept anhand der ID geladen
   useEffect(() => {
+    //? Scrolle nach oben wenn Rezept geladen wird
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+
     const fetchRecipe = async () => {
       if (id) {
         setLoading(true)
@@ -44,6 +48,19 @@ export default function RecipeDetail() {
     }
     checkFavoriteStatus()
   }, [user, id])
+
+  //? Handler-Funktion zum Löschen des Rezepts
+  const handleDelete = async () => {
+    if (!id) return
+
+    const success = await deleteRecipe(id)
+    if (success) {
+      //? Redirect zur Home-Seite nach erfolgreichem Löschen
+      navigate("/")
+    } else {
+      alert("Fehler beim Löschen des Rezepts!")
+    }
+  }
 
   //? Handler-Funktion zum Hinzufügen/Entfernen von Favoriten
   const handleToggleFavorite = async () => {
@@ -102,7 +119,7 @@ export default function RecipeDetail() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
         <p className="text-xl text-gray-700 dark:text-gray-300 mb-4">Recipe not found</p>
-        <Link to="/" className="text-blue-600 hover:text-blue-700 underline">
+        <Link to="/" className="text-yellow-500 hover:text-yellow-600 underline">
           Back to Home
         </Link>
       </div>
@@ -114,18 +131,19 @@ export default function RecipeDetail() {
   //? Zutaten kommen direkt aus der DB als strukturiertes Array
   const ingredients = recipe.ingredients || []
 
+  //? DEBUG: Zeige Rezeptbild-URL in der Console
+  console.log("📸 Recipe image_url:", recipe.image_url)
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/*? Hero-Bereich mit Rezept-Bild und Titel */}
       <div
-        className="relative h-80 bg-cover bg-center flex items-center justify-center"
+        className="relative h-80 bg-cover bg-center flex items-center justify-center bg-gray-800"
         style={{
           backgroundImage: recipe.image_url
-            ? `url(${recipe.image_url})`
-            : `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/public/lily-banse--YHSwy6uqvk-unsplash.jpg')`,
+            ? `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${recipe.image_url})`
+            : `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/lily-banse--YHSwy6uqvk-unsplash.jpg')`,
         }}>
-        {/*? Dunkler Overlay für bessere Lesbarkeit */}
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
         <h1 className="relative text-5xl font-bold text-white z-10">{recipe.name}</h1>
 
         {/*? Add to Favorites Button - positioniert in der rechten oberen Ecke */}
@@ -154,6 +172,55 @@ export default function RecipeDetail() {
 
       {/*? Hauptinhalt */}
       <div className="container mx-auto px-6 py-10 max-w-4xl">
+        {/*? Ersteller-Info mit Profilbild */}
+        {(recipe.user?.username || recipe.created_at) && (
+          <div className="mb-6 flex items-center justify-between">
+            {recipe.user?.username && (
+              <div className="flex items-center gap-3">
+                {/*? Profilbild des Erstellers */}
+                <img
+                  src={recipe.user.img_url || "https://via.placeholder.com/48"}
+                  alt={recipe.user.username}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600"
+                />
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Erstellt von</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">{recipe.user.username}</p>
+                </div>
+              </div>
+            )}
+            {recipe.created_at && (
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {new Date(recipe.created_at).toLocaleDateString("de-DE", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/*? Edit/Delete Buttons - nur für eigene Rezepte */}
+        {user?.id && recipe.user_id === user.id && (
+          <div className="mb-6 flex gap-4">
+            <Link
+              to={`/edit-recipe/${recipe.id}`}
+              className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg text-center transition-colors">
+              Rezept bearbeiten
+            </Link>
+            <button
+              onClick={() => {
+                if (confirm("Möchtest du dieses Rezept wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.")) {
+                  handleDelete()
+                }
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+              Löschen
+            </button>
+          </div>
+        )}
+
         {/*? Beschreibung */}
         {recipe.description && (
           <div className="mb-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
@@ -166,7 +233,7 @@ export default function RecipeDetail() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Zutaten</h2>
             {/*? Portionen-Anzeige direkt bei den Zutaten, da sie angibt für wie viele Portionen die Mengen sind */}
-            <div className="bg-blue-100 dark:bg-blue-800 px-4 py-2 rounded-lg">
+            <div className="bg-yellow-100 dark:bg-yellow-800 px-4 py-2 rounded-lg">
               <p className="text-gray-800 dark:text-gray-100 font-semibold">
                 Für {recipe.servings || "N/A"} Portionen
               </p>
@@ -176,7 +243,7 @@ export default function RecipeDetail() {
             <ul className="space-y-2">
               {ingredients.map((ingredient) => (
                 <li key={ingredient.id} className="flex items-start">
-                  <span className="text-blue-600 mr-2">•</span>
+                  <span className="text-yellow-500 mr-2">•</span>
                   <span className="text-gray-700 dark:text-gray-300">
                     {ingredient.quantity && ingredient.unit
                       ? `${ingredient.quantity} ${ingredient.unit} `
@@ -203,7 +270,7 @@ export default function RecipeDetail() {
             <ol className="space-y-4">
               {instructions.map((step, index) => (
                 <li key={index} className="flex items-start">
-                  <span className="text-blue-600 font-bold mr-3 text-lg">{index + 1}.</span>
+                  <span className="text-yellow-500 font-bold mr-3 text-lg">{index + 1}.</span>
                   <span className="text-gray-700 dark:text-gray-300 leading-relaxed">{step}</span>
                 </li>
               ))}
@@ -227,7 +294,7 @@ export default function RecipeDetail() {
         <div className="text-center">
           <Link
             to="/"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200">
+            className="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200">
             Back to Recipes
           </Link>
         </div>

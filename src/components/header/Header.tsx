@@ -63,13 +63,13 @@ export default function Header() {
   return (
     <header className="bg-white dark:bg-gray-900 shadow-md">
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
-        <h3 className="text-2xl font-bold text-blue-600">MyShop</h3>
+        <h3 className="text-2xl font-bold text-yellow-500">Die Rezeptwelt</h3>
 
         <nav className="flex items-center space-x-6">
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `font-medium ${isActive ? "text-blue-600" : "text-gray-700 dark:text-gray-300 hover:text-blue-500"}`
+              `font-medium ${isActive ? "text-yellow-500" : "text-gray-700 dark:text-gray-300 hover:text-yellow-400"}`
             }>
             Home
           </NavLink>
@@ -77,7 +77,7 @@ export default function Header() {
           <NavLink
             to="/profile"
             className={({ isActive }) =>
-              `font-medium ${isActive ? "text-blue-600" : "text-gray-700 dark:text-gray-300 hover:text-blue-500"}`
+              `font-medium ${isActive ? "text-yellow-500" : "text-gray-700 dark:text-gray-300 hover:text-yellow-400"}`
             }>
             Profile
           </NavLink>
@@ -85,24 +85,44 @@ export default function Header() {
           <NavLink
             to="/favorites"
             className={({ isActive }) =>
-              `font-medium ${isActive ? "text-blue-600" : "text-gray-700 dark:text-gray-300 hover:text-blue-500"}`
+              `font-medium ${isActive ? "text-yellow-500" : "text-gray-700 dark:text-gray-300 hover:text-yellow-400"}`
             }>
             Favorites
           </NavLink>
+
+          {isLoggedIn && (
+            <>
+              <NavLink
+                to="/my-recipes"
+                className={({ isActive }) =>
+                  `font-medium ${isActive ? "text-yellow-500" : "text-gray-700 dark:text-gray-300 hover:text-yellow-400"}`
+                }>
+                Meine Rezepte
+              </NavLink>
+
+              <NavLink
+                to="/create-recipe"
+                className={({ isActive }) =>
+                  `font-medium ${isActive ? "text-yellow-500" : "text-gray-700 dark:text-gray-300 hover:text-yellow-400"}`
+                }>
+                Rezept erstellen
+              </NavLink>
+            </>
+          )}
 
           {!isLoggedIn ? (
             <>
               <NavLink
                 to="/login"
                 className={({ isActive }) =>
-                  `font-medium ${isActive ? "text-blue-600" : "text-gray-700 dark:text-gray-300 hover:text-blue-500"}`
+                  `font-medium ${isActive ? "text-yellow-500" : "text-gray-700 dark:text-gray-300 hover:text-yellow-400"}`
                 }>
                 Login
               </NavLink>
               <NavLink
                 to="/signup"
                 className={({ isActive }) =>
-                  `font-medium ${isActive ? "text-blue-600" : "text-gray-700 dark:text-gray-300 hover:text-blue-500"}`
+                  `font-medium ${isActive ? "text-yellow-500" : "text-gray-700 dark:text-gray-300 hover:text-yellow-400"}`
                 }>
                 Sign Up
               </NavLink>

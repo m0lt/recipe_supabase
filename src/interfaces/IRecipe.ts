@@ -16,4 +16,11 @@ export interface IRecipe {
   additional_info?: string
   category_id: string
   created_at: string
+  //? user_id ist die ID des Users der das Rezept erstellt hat (optional für alte Rezepte)
+  user_id?: string
+  //? user enthält die User-Informationen des Erstellers (JOIN mit users Tabelle)
+  user?: {
+    username: string
+    img_url?: string
+  }
 }

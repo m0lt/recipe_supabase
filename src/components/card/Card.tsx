@@ -24,7 +24,7 @@ export default function Card({ recipe }: CardProps) {
       <div className="p-6">
         {/*? Rezeptname - anklickbar als Link zur Detailseite */}
         <Link to={`/recipe/${recipe.id}`}>
-          <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">
+          <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-gray-100 hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors cursor-pointer">
             {recipe.name}
           </h3>
         </Link>
@@ -36,7 +36,7 @@ export default function Card({ recipe }: CardProps) {
         {/*? Button zur Detailseite - jetzt als Link statt Button */}
         <Link
           to={`/recipe/${recipe.id}`}
-          className="inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-6 rounded-full transition-colors">
+          className="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-6 rounded-full transition-colors">
           Zum Rezept
         </Link>
       </div>

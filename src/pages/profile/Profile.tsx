@@ -147,7 +147,7 @@ export default function Profile() {
                   setProfilePhoto(e.target.files[0])
                 }
               }}
-              className="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-gray-700 dark:file:text-gray-200"
+              className="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100 dark:file:bg-gray-700 dark:file:text-gray-200"
             />
             {/*? Upload Button wird nur angezeigt wenn ein Foto ausgewählt wurde */}
             {profilePhoto && (
@@ -167,7 +167,7 @@ export default function Profile() {
                 placeholder="Change your username"
                 value={newUsername}
                 onChange={(e) => setNewUserName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 bg-white dark:bg-gray-800 dark:text-white"
               />
             ) : (
               <p className="text-lg font-medium text-gray-800 dark:text-gray-100">{user.username}</p>
@@ -186,14 +186,14 @@ export default function Profile() {
           {isEditing && (
             <button
               onClick={handleSave}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
               Save
             </button>
           )}
 
           <Link
             to="/"
-            className="block text-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mt-4">
+            className="block text-center text-sm text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300 mt-4">
             Back to Home
           </Link>
         </div>

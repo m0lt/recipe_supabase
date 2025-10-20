@@ -57,7 +57,7 @@ export default function Favorites() {
             <p className="mb-4">You haven't added any favorite recipes yet.</p>
             <Link
               to="/"
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200">
+              className="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200">
               Browse Recipes
             </Link>
           </div>
@@ -82,7 +82,7 @@ export default function Favorites() {
               <div className="flex-1">
                 {/*? Rezeptname anzeigen - anklickbar als Link zur Detailseite */}
                 <Link to={`/recipe/${favoriteItem?.recipes?.id}`}>
-                  <h3 className="text-lg font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 mb-2 cursor-pointer">
+                  <h3 className="text-lg font-semibold text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300 mb-2 cursor-pointer">
                     {favoriteItem?.recipes?.name || "Unnamed Recipe"}
                   </h3>
                 </Link>
@@ -102,7 +102,7 @@ export default function Favorites() {
                 {/*? Button zur Detailseite */}
                 <Link
                   to={`/recipe/${favoriteItem?.recipes?.id}`}
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1.5 px-3 rounded-lg transition-all duration-200">
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1.5 px-3 rounded-lg transition-all duration-200">
                   View
                 </Link>
 
@@ -120,7 +120,7 @@ export default function Favorites() {
         <div className="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow p-5 text-center">
           <Link
             to="/"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200">
+            className="inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200">
             Browse More Recipes
           </Link>
         </div>
